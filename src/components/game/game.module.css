@@ -1,0 +1,6 @@
+.Game {
+  width: 400px;
+  height: 400px;
+  display: flex;
+  flex-wrap: wrap;
+}
