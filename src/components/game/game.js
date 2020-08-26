@@ -7,6 +7,7 @@ class Game extends Component {
   state = {
     width: 10,
     bombAmount: 20,
+    flagAmount: 20,
     gameArray: {
       blockState: [],
       value: [],
@@ -17,7 +18,7 @@ class Game extends Component {
 
   blockClickedHandler = (id) => {
     if (!this.state.gameOver) {
-      if (!this.state.gameArray.showValue[id]) {
+      if (this.state.gameArray.showValue[id] === 0) {
         const gameArray = { ...this.state.gameArray };
         const showValue = { ...this.state.gameArray.showValue };
 
@@ -25,18 +26,39 @@ class Game extends Component {
         if (this.state.gameArray.blockState[id] === "bomb") {
           for (let i = 0; i < this.state.width * this.state.width; ++i) {
             if (this.state.gameArray.blockState[i] === "bomb") {
-              showValue[i] = true;
+              showValue[i] = 1;
             }
           }
           gameOver = true;
         } else {
-          showValue[id] = true;
+          showValue[id] = 1;
         }
 
         gameArray.showValue = showValue;
 
         this.setState({ gameArray: gameArray, gameOver: gameOver });
       }
+    }
+  };
+
+  addFlagHandler = (e, id) => {
+    e.preventDefault();
+
+    if (!this.state.gameOver) {
+      const gameArray = { ...this.state.gameArray };
+      const showValue = { ...this.state.gameArray.showValue };
+      let flagAmount = this.state.flagAmount;
+
+      if (showValue[id] === 0 && flagAmount > 0) {
+        showValue[id] = 2;
+        --flagAmount;
+      } else if (showValue[id] == 2) {
+        showValue[id] = 0;
+        ++flagAmount;
+      }
+
+      gameArray.showValue = showValue;
+      this.setState({ gameArray: gameArray, flagAmount: flagAmount });
     }
   };
 
@@ -92,7 +114,7 @@ class Game extends Component {
     for (let i = 0; i < this.state.width * this.state.width; ++i) {
       gameArray.blockState.push(blockStateArray[i]);
       gameArray.value.push(dataArray[i]);
-      gameArray.showValue.push(false);
+      gameArray.showValue.push(0);
     }
 
     this.setState({ gameArray: gameArray });
@@ -108,6 +130,7 @@ class Game extends Component {
           value={this.state.gameArray.value[i]}
           showValue={this.state.gameArray.showValue[i]}
           clicked={() => this.blockClickedHandler(i)}
+          addFlag={(e) => this.addFlagHandler(e, i)}
         />
       );
     }
