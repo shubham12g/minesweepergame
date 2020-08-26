@@ -8,7 +8,12 @@ const block = (props) => {
   let value;
   if (props.showValue === 0) value = null;
   else if (props.showValue === 1) {
-    value = props.blockState === "bomb" ? "💣" : props.value;
+    if (props.blockState === "bomb") {
+      value = "💣";
+    } else {
+      value = props.value > 0 ? props.value : null;
+      blockClass.push(classes.Checked);
+    }
   } else {
     value = "⛳";
   }

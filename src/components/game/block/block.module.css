@@ -13,3 +13,7 @@
 .bomb {
   background-color: red;
 }
+
+.Checked {
+  background-color: lightgray;
+}

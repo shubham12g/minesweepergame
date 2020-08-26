@@ -31,6 +31,9 @@ class Game extends Component {
           }
           gameOver = true;
         } else {
+          if (this.state.gameArray.value[id] === 0) {
+            this.checkBlock(id);
+          }
           showValue[id] = 1;
         }
 
@@ -39,6 +42,38 @@ class Game extends Component {
         this.setState({ gameArray: gameArray, gameOver: gameOver });
       }
     }
+  };
+
+  checkBlock = (id) => {
+    const isLeftEdge = id % this.state.width === 0;
+    const isRightEdge = id % this.state.width === this.state.width - 1;
+
+    setTimeout(() => {
+      if (id > 0 && !isLeftEdge) {
+        this.blockClickedHandler(id - 1);
+      }
+      if (id > 9 && !isRightEdge) {
+        this.blockClickedHandler(id - this.state.width + 1);
+      }
+      if (id > 9) {
+        this.blockClickedHandler(id - this.state.width);
+      }
+      if (id > 10 && !isLeftEdge) {
+        this.blockClickedHandler(id - 1 - this.state.width);
+      }
+      if (id < 99 && !isRightEdge) {
+        this.blockClickedHandler(id + 1);
+      }
+      if (id < 90 && !isLeftEdge) {
+        this.blockClickedHandler(id + this.state.width - 1);
+      }
+      if (id < 89 && !isRightEdge) {
+        this.blockClickedHandler(id + this.state.width + 1);
+      }
+      if (id < 90) {
+        this.blockClickedHandler(id + this.state.width);
+      }
+    }, 10);
   };
 
   addFlagHandler = (e, id) => {
