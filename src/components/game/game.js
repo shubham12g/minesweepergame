@@ -87,13 +87,31 @@ class Game extends Component {
       if (showValue[id] === 0 && flagAmount > 0) {
         showValue[id] = 2;
         --flagAmount;
-      } else if (showValue[id] == 2) {
+      } else if (showValue[id] === 2) {
         showValue[id] = 0;
         ++flagAmount;
       }
 
       gameArray.showValue = showValue;
       this.setState({ gameArray: gameArray, flagAmount: flagAmount });
+
+      this.checkForWin(showValue);
+    }
+  };
+
+  checkForWin = (showValue) => {
+    let matches = 0;
+    for (let i = 0; i < this.state.width * this.state.width; ++i) {
+      if (this.state.gameArray.blockState[i] === "bomb" && showValue[i] === 2) {
+        ++matches;
+      }
+    }
+
+    console.log(matches);
+
+    if (matches === this.state.bombAmount) {
+      console.log("won!");
+      this.setState({ gameOver: true });
     }
   };
 
