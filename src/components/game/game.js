@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 
-import Block from "./block/block";
 import classes from "./game.module.css";
+import Blocks from "./blocks/blocks";
 
 class Game extends Component {
   state = {
+    gameLoaded: false,
     width: 10,
     bombAmount: 20,
     flagAmount: 20,
@@ -170,25 +171,22 @@ class Game extends Component {
       gameArray.showValue.push(0);
     }
 
-    this.setState({ gameArray: gameArray });
+    this.setState({ gameArray: gameArray, gameLoaded: true });
   }
 
   render() {
-    let blocks = [];
-    for (let i = 0; i < this.state.width * this.state.width; ++i) {
-      blocks.push(
-        <Block
-          key={i}
-          blockState={this.state.gameArray.blockState[i]}
-          value={this.state.gameArray.value[i]}
-          showValue={this.state.gameArray.showValue[i]}
-          clicked={() => this.blockClickedHandler(i)}
-          addFlag={(e) => this.addFlagHandler(e, i)}
+    return (
+      <div className={classes.Game}>
+        <Blocks
+          gameLoaded={this.state.gameLoaded}
+          width={this.state.width}
+          gameArray={this.state.gameArray}
+          clicked={(i) => this.blockClickedHandler(i)}
+          addFlag={(e, i) => this.addFlagHandler(e, i)}
         />
-      );
-    }
-
-    return <div className={classes.Game}>{blocks}</div>;
+        <p>score and other info</p>
+      </div>
+    );
   }
 }
 

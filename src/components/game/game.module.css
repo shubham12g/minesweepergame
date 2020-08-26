@@ -1,6 +1,6 @@
 .Game {
-  width: 400px;
-  height: 400px;
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: column;
+  align-items: center;
+  justify-content: space-between;
 }

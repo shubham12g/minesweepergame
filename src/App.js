@@ -8,7 +8,6 @@ function App() {
     <div className={classes.App}>
       <div>minesweeper</div>
       <Game />
-      <div>score and other info</div>
     </div>
   );
 }
