@@ -7,24 +7,79 @@ class Game extends Component {
   state = {
     width: 10,
     bombAmount: 20,
-    gameArray: [],
+    gameArray: {
+      blockState: [],
+      value: [],
+      showValue: [],
+    },
   };
 
   blockClickedHandler = (id) => {
-    const gameArray = { ...this.state.gameArray };
+    if (!this.state.gameArray.showValue[id]) {
+      const gameArray = { ...this.state.gameArray };
+      const showValue = { ...this.state.gameArray.showValue };
 
-    if (gameArray[id] === "bomb") {
-      console.log("game over!");
+      showValue[id] = true;
+      gameArray.showValue = showValue;
+
+      this.setState({ gameArray: gameArray });
     }
   };
 
   componentDidMount() {
+    //create the game array
     const bombArray = Array(this.state.bombAmount).fill("bomb");
     const numberArray = Array(
       this.state.width * this.state.width - this.state.bombAmount
     ).fill("number");
     const totalArray = bombArray.concat(numberArray);
-    const gameArray = totalArray.sort(() => Math.random() - 0.5);
+    const blockStateArray = totalArray.sort(() => Math.random() - 0.5);
+
+    //add the numbers
+    const dataArray = [];
+    for (let i = 0; i < this.state.width * this.state.width; ++i) {
+      let total = 0;
+      const isLeftEdge = i % this.state.width === 0;
+      const isRightEdge = i % this.state.width === this.state.width - 1;
+
+      if (i > 0 && !isLeftEdge && blockStateArray[i - 1] === "bomb") ++total;
+      if (
+        i > 9 &&
+        !isRightEdge &&
+        blockStateArray[i - this.state.width + 1] === "bomb"
+      )
+        ++total;
+      if (i > 9 && blockStateArray[i - this.state.width] === "bomb") ++total;
+      if (
+        i > 10 &&
+        !isLeftEdge &&
+        blockStateArray[i - this.state.width - 1] === "bomb"
+      )
+        ++total;
+      if (i < 99 && blockStateArray[i + 1] === "bomb") ++total;
+      if (
+        i < 90 &&
+        !isLeftEdge &&
+        blockStateArray[i + this.state.width - 1] === "bomb"
+      )
+        ++total;
+      if (
+        i < 88 &&
+        !isRightEdge &&
+        blockStateArray[i + this.state.width + 1] === "bomb"
+      )
+        ++total;
+      if (i < 90 && blockStateArray[i + this.state.width] === "bomb") ++total;
+
+      dataArray.push(total);
+    }
+
+    let gameArray = { blockState: [], value: [], showValue: [] };
+    for (let i = 0; i < this.state.width * this.state.width; ++i) {
+      gameArray.blockState.push(blockStateArray[i]);
+      gameArray.value.push(dataArray[i]);
+      gameArray.showValue.push(false);
+    }
 
     this.setState({ gameArray: gameArray });
   }
@@ -35,7 +90,9 @@ class Game extends Component {
       blocks.push(
         <Block
           key={i}
-          value={this.state.gameArray[i]}
+          blockState={this.state.gameArray.blockState[i]}
+          value={this.state.gameArray.value[i]}
+          showValue={this.state.gameArray.showValue[i]}
           clicked={() => this.blockClickedHandler(i)}
         />
       );
