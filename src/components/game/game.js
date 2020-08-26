@@ -12,17 +12,31 @@ class Game extends Component {
       value: [],
       showValue: [],
     },
+    gameOver: false,
   };
 
   blockClickedHandler = (id) => {
-    if (!this.state.gameArray.showValue[id]) {
-      const gameArray = { ...this.state.gameArray };
-      const showValue = { ...this.state.gameArray.showValue };
+    if (!this.state.gameOver) {
+      if (!this.state.gameArray.showValue[id]) {
+        const gameArray = { ...this.state.gameArray };
+        const showValue = { ...this.state.gameArray.showValue };
 
-      showValue[id] = true;
-      gameArray.showValue = showValue;
+        let gameOver = false;
+        if (this.state.gameArray.blockState[id] === "bomb") {
+          for (let i = 0; i < this.state.width * this.state.width; ++i) {
+            if (this.state.gameArray.blockState[i] === "bomb") {
+              showValue[i] = true;
+            }
+          }
+          gameOver = true;
+        } else {
+          showValue[id] = true;
+        }
 
-      this.setState({ gameArray: gameArray });
+        gameArray.showValue = showValue;
+
+        this.setState({ gameArray: gameArray, gameOver: gameOver });
+      }
     }
   };
 
